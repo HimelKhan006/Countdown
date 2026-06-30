@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <title>COUNTDOWN</title>
+  
+  <!-- Premium Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #06070a;
+      --text-main: #f8fafc;
+      --text-muted: #64748b;
+      
+      /* Professional Colorful Palette */
+      --color-days: #3b82f6;     /* Electric Blue */
+      --color-hours: #6366f1;    /* Indigo */
+      --color-mins: #d946ef;     /* Fuchsia */
+      --color-secs: #f97316;     /* Coral Orange */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(217, 70, 239, 0.03) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    /* Minimalist Timeline Badges */
+    .timeline {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+
+    .badge {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94a3b8;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-separator {
+      width: 4px;
+      height: 4px;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+    }
+
+    /* Horizontal Inline Row */
+    .countdown-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .segment {
+      display: flex;
+      align-items: baseline; /* Aligns number and label perfectly on the baseline */
+      gap: 8px;
+    }
+
+    /* Color assignments */
+    .col-days  { --col-color: var(--color-days); }
+    .col-hours { --col-color: var(--color-hours); }
+    .col-mins  { --col-color: var(--color-mins); }
+    .col-secs  { --col-color: var(--color-secs); }
+
+    .number {
+      font-size: 72px;
+      font-weight: 300;
+      color: var(--col-color);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .label {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    /* Elegant inline divider colon */
+    .divider {
+      font-size: 48px;
+      font-weight: 200;
+      color: rgba(255, 255, 255, 0.08);
+      line-height: 1;
+      margin-bottom: 8px; /* Visual centering balance */
+    }
+
+    /* Responsiveness scaling */
+    @media (max-width: 768px) {
+      .divider {
+        display: none; /* Hide dividers on wrap for a cleaner layout */
+      }
+      .countdown-row {
+        gap: 20px 32px;
+      }
+      .number {
+        font-size: 48px;
+      }
+      .label {
+        font-size: 12px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      .timeline {
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 40px;
+      }
+      .badge-separator {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>COUNTDOWN</h1>
+    
+    <div class="timeline">
+      <div class="badge">Start: 01 July 2026</div>
+      <div class="badge-separator"></div>
+      <div class="badge">Expiry: <span id="expiry-display" style="color: #e2e8f0;"></span></div>
+    </div>
+
+    <div class="countdown-row">
+      <div class="segment col-days">
+        <span id="d" class="number">00</span>
+        <span class="label">Days</span>
+      </div>
+      
+      <div class="divider">:</div>
+      
+      <div class="segment col-hours">
+        <span id="h" class="number">00</span>
+        <span class="label">Hours</span>
+      </div>
+      
+      <div class="divider">:</div>
+      
+      <div class="segment col-mins">
+        <span id="m" class="number">00</span>
+        <span class="label">Mins</span>
+      </div>
+      
+      <div class="divider">:</div>
+      
+      <div class="segment col-secs">
+        <span id="s" class="number">00</span>
+        <span class="label">Secs</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const expiry = new Date("2030-02-25T00:00:00");
+    
+    // Format expiration date
+    const formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('expiry-display').textContent = expiry.toLocaleDateString('en-US', formatOptions);
+
+    function update() {
+      const now = new Date();
+      let diff = expiry - now;
+      if (diff < 0) diff = 0;
+
+      const dVal = Math.floor(diff / 86400000);
+      const hVal = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+      const mVal = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+      const sVal = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+
+      document.getElementById('d').textContent = dVal;
+      document.getElementById('h').textContent = hVal;
+      document.getElementById('m').textContent = mVal;
+      document.getElementById('s').textContent = sVal;
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
